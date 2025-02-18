@@ -22,7 +22,7 @@ dependencies {
     // This dependency is used by the application.
     implementation libs.guava
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
-
+    implementation "org.mindrot:jbcrypt:0.4"
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
