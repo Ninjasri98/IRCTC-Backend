@@ -3,12 +3,74 @@
  */
 package org.example;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.UUID;
+
+import org.example.entities.Train;
+import org.example.entities.User;
+import org.example.services.UserBookingService;
+import org.example.util.UserServiceUtil;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+    
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        System.out.println("Running the ticket booking app");
+        Scanner scanner = new Scanner(System.in);
+        int option = 0;
+        UserBookingService userBookingService ;
+        try {
+            userBookingService = new UserBookingService();
+        } catch (IOException ex) {
+            System.out.println("Error loading users");
+            return;
+
+        }
+        while (option!=7) {
+            System.out.println("Choose option");
+            System.out.println("1. Sign up");
+            System.out.println("2. Login");
+            System.out.println("3. Fetch Bookings");
+            System.out.println("4. Search Trains");
+            System.out.println("5. Book a Seat");
+            System.out.println("6. Cancel my Booking");
+            System.out.println("7. Exit the App");
+            option = scanner.nextInt();
+            Train trainSelectedForBooking = new Train();         
+            switch(option){
+                case 1:
+                    System.out.println("Enter your username: ");
+                    String nameToSignUp = scanner.next();
+                    System.out.println("Enter your password: ");
+                    String passwordToSignUp = scanner.next();
+                    User userToSignUp = new User( nameToSignUp,passwordToSignUp,
+                    UserServiceUtil.getHashedPassword(passwordToSignUp),new ArrayList<>(), UUID.randomUUID().toString()
+                    );
+                    userBookingService.signup(userToSignUp);
+                    break;
+                case 2:
+                    System.out.println("Enter your username: ");
+                    String nameToLogin = scanner.next();
+                    System.out.println("Enter your password: ");
+                    String passwordToLogin = scanner.next();
+                    User userToLogin = new User(nameToLogin,passwordToLogin,UserServiceUtil.getHashedPassword(passwordToLogin),new ArrayList<>(),UUID.randomUUID().toString());
+                    try {
+                        userBookingService = new UserBookingService(userToLogin);
+
+                    } catch (IOException exp) {
+                        
+                        return;
+                    }
+                    break;
+                case 3:
+                    System.out.println("Fetching all your bookings ");
+                    userBookingService.fetchBooking();
+                    break;
+                
+            }   
+        }
+
     }
 }
